@@ -2,6 +2,7 @@ package co.uptc.ejercicio11.controller;
 
 import co.uptc.ejercicio11.model.PersonaPage;
 import co.uptc.ejercicio11.model.PersonaResponse;
+import co.uptc.ejercicio11.model.PersonaUpdateRequest;
 import co.uptc.ejercicio11.service.PersonaService;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,5 +30,10 @@ public class PersonaController {
     @GetMapping("/{id}")
     public PersonaResponse obtenerPorId(@PathVariable Long id) {
         return personaService.obtenerPorId(id);
+    }
+
+    @PutMapping("/{id}")
+    public PersonaResponse actualizar(@PathVariable Long id, @RequestBody PersonaUpdateRequest datos) {
+        return personaService.actualizar(id, datos);
     }
 }

@@ -1,10 +1,12 @@
 package co.uptc.ejercicio11.service.impl;
 
 import co.uptc.ejercicio11.exeption.PaginaInvalidaException;
+import co.uptc.ejercicio11.exeption.PersonaInvalidaException;
 import co.uptc.ejercicio11.exeption.PersonaNoEncontradaException;
 import co.uptc.ejercicio11.model.Persona;
 import co.uptc.ejercicio11.model.PersonaPage;
 import co.uptc.ejercicio11.model.PersonaResponse;
+import co.uptc.ejercicio11.model.PersonaUpdateRequest;
 import co.uptc.ejercicio11.repository.PersonaRepository;
 import co.uptc.ejercicio11.service.HostnameService;
 import co.uptc.ejercicio11.service.PersonaService;
@@ -15,6 +17,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Implementación de la lógica de negocio de Personas. Delega la paginación
  * en Spring Data (Pageable) y agrega a la respuesta el hostname de la
@@ -23,6 +28,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(readOnly = true)
 public class PersonaServiceImpl implements PersonaService {
+
+    // Coincide con el VARCHAR(60) de las columnas de la tabla personas.
+    private static final int LONGITUD_MAXIMA = 60;
 
     private final PersonaRepository personaRepository;
     private final HostnameService hostnameService;
@@ -61,5 +69,48 @@ public class PersonaServiceImpl implements PersonaService {
         Persona persona = personaRepository.findById(id)
                 .orElseThrow(() -> new PersonaNoEncontradaException(id));
         return new PersonaResponse(persona, hostnameService.obtenerHostname());
+    }
+
+    @Override
+    @Transactional
+    public PersonaResponse actualizar(Long id, PersonaUpdateRequest datos) {
+        validar(datos);
+
+        Persona persona = personaRepository.findById(id)
+                .orElseThrow(() -> new PersonaNoEncontradaException(id));
+        persona.setPrimerNombre(datos.primerNombre());
+        persona.setSegundoNombre(datos.segundoNombre());
+        persona.setPrimerApellido(datos.primerApellido());
+        persona.setSegundoApellido(datos.segundoApellido());
+
+        Persona actualizada = personaRepository.save(persona);
+        return new PersonaResponse(actualizada, hostnameService.obtenerHostname());
+    }
+
+    // Se valida manualmente porque el proyecto no incluye una implementación
+    // de Bean Validation (solo jakarta.validation-api), así que @Valid no se aplica.
+    private void validar(PersonaUpdateRequest datos) {
+        List<String> errores = new ArrayList<>();
+        validarObligatorio("primerNombre", datos.primerNombre(), errores);
+        validarObligatorio("primerApellido", datos.primerApellido(), errores);
+        validarLongitud("primerNombre", datos.primerNombre(), errores);
+        validarLongitud("segundoNombre", datos.segundoNombre(), errores);
+        validarLongitud("primerApellido", datos.primerApellido(), errores);
+        validarLongitud("segundoApellido", datos.segundoApellido(), errores);
+        if (!errores.isEmpty()) {
+            throw new PersonaInvalidaException(String.join(", ", errores));
+        }
+    }
+
+    private void validarObligatorio(String campo, String valor, List<String> errores) {
+        if (valor == null || valor.isBlank()) {
+            errores.add(campo + ": es obligatorio y no puede estar vacío");
+        }
+    }
+
+    private void validarLongitud(String campo, String valor, List<String> errores) {
+        if (valor != null && valor.length() > LONGITUD_MAXIMA) {
+            errores.add(campo + ": no puede superar " + LONGITUD_MAXIMA + " caracteres");
+        }
     }
 }
