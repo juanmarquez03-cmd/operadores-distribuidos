@@ -5,20 +5,22 @@ import com.fasterxml.jackson.annotation.JsonUnwrapped;
 /**
  * Respuesta del endpoint de consulta de una Persona por id. Los campos de la
  * persona se serializan "aplanados" (sin objeto anidado), de modo que el JSON
- * conserva la estructura original y solo agrega el campo hostname.
+ * conserva la estructura original y solo agrega los campos hostname y dueno.
  */
 public class PersonaResponse {
 
     @JsonUnwrapped
     private Persona persona;
     private String hostname;
+    private String dueno;
 
     public PersonaResponse() {
     }
 
-    public PersonaResponse(Persona persona, String hostname) {
+    public PersonaResponse(Persona persona, String hostname, String dueno) {
         this.persona = persona;
         this.hostname = hostname;
+        this.dueno = dueno;
     }
 
     public Persona getPersona() {
@@ -35,5 +37,13 @@ public class PersonaResponse {
 
     public void setHostname(String hostname) {
         this.hostname = hostname;
+    }
+
+    public String getDueno() {
+        return dueno;
+    }
+
+    public void setDueno(String dueno) {
+        this.dueno = dueno;
     }
 }

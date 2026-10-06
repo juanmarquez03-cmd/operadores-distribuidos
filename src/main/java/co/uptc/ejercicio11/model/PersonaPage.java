@@ -14,6 +14,7 @@ public class PersonaPage {
     private long totalElementos;
     private int totalPaginas;
     private String hostname;
+    private String dueno;
 
     public PersonaPage() {
     }
@@ -73,5 +74,13 @@ public class PersonaPage {
 
     public void setHostname(String hostname) {
         this.hostname = hostname;
+    }
+
+    public String getDueno() {
+        return dueno;
+    }
+
+    public void setDueno(String dueno) {
+        this.dueno = dueno;
     }
 }

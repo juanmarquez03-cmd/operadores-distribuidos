@@ -8,6 +8,7 @@ import co.uptc.ejercicio11.model.PersonaPage;
 import co.uptc.ejercicio11.model.PersonaResponse;
 import co.uptc.ejercicio11.model.PersonaUpdateRequest;
 import co.uptc.ejercicio11.repository.PersonaRepository;
+import co.uptc.ejercicio11.service.DuenoService;
 import co.uptc.ejercicio11.service.HostnameService;
 import co.uptc.ejercicio11.service.PersonaService;
 import org.springframework.data.domain.Page;
@@ -23,7 +24,7 @@ import java.util.List;
 /**
  * Implementación de la lógica de negocio de Personas. Delega la paginación
  * en Spring Data (Pageable) y agrega a la respuesta el hostname de la
- * instancia que atendió la petición.
+ * instancia que atendió la petición y el dueño del servicio.
  */
 @Service
 @Transactional(readOnly = true)
@@ -34,10 +35,13 @@ public class PersonaServiceImpl implements PersonaService {
 
     private final PersonaRepository personaRepository;
     private final HostnameService hostnameService;
+    private final DuenoService duenoService;
 
-    public PersonaServiceImpl(PersonaRepository personaRepository, HostnameService hostnameService) {
+    public PersonaServiceImpl(PersonaRepository personaRepository, HostnameService hostnameService,
+                              DuenoService duenoService) {
         this.personaRepository = personaRepository;
         this.hostnameService = hostnameService;
+        this.duenoService = duenoService;
     }
 
     @Override
@@ -61,6 +65,7 @@ public class PersonaServiceImpl implements PersonaService {
                 resultado.getTotalPages()
         );
         page.setHostname(hostnameService.obtenerHostname());
+        page.setDueno(duenoService.obtenerDueno());
         return page;
     }
 
@@ -68,7 +73,7 @@ public class PersonaServiceImpl implements PersonaService {
     public PersonaResponse obtenerPorId(Long id) {
         Persona persona = personaRepository.findById(id)
                 .orElseThrow(() -> new PersonaNoEncontradaException(id));
-        return new PersonaResponse(persona, hostnameService.obtenerHostname());
+        return new PersonaResponse(persona, hostnameService.obtenerHostname(), duenoService.obtenerDueno());
     }
 
     @Override
@@ -84,7 +89,7 @@ public class PersonaServiceImpl implements PersonaService {
         persona.setSegundoApellido(datos.segundoApellido());
 
         Persona actualizada = personaRepository.save(persona);
-        return new PersonaResponse(actualizada, hostnameService.obtenerHostname());
+        return new PersonaResponse(actualizada, hostnameService.obtenerHostname(), duenoService.obtenerDueno());
     }
 
     // Se valida manualmente porque el proyecto no incluye una implementación
