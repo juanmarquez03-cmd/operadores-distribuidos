@@ -1,11 +1,14 @@
 package co.uptc.ejercicio11.model;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
 import java.util.List;
 
 /**
  * Página de resultados devuelta por el endpoint de listado de Personas.
  * Evita transportar la tabla completa en una sola respuesta.
  */
+@JsonPropertyOrder({"contenido", "pagina", "tamanioPagina", "totalElementos", "totalPaginas", "hostname", "dueno"})
 public class PersonaPage {
 
     private List<Persona> contenido;

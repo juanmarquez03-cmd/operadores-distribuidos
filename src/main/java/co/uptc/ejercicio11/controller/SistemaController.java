@@ -1,8 +1,6 @@
 package co.uptc.ejercicio11.controller;
 
-import co.uptc.ejercicio11.model.DuenoResponse;
 import co.uptc.ejercicio11.model.QuienResponse;
-import co.uptc.ejercicio11.service.DuenoService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,20 +16,9 @@ import java.net.UnknownHostException;
 @RequestMapping("/api")
 public class SistemaController {
 
-    private final DuenoService duenoService;
-
-    public SistemaController(DuenoService duenoService) {
-        this.duenoService = duenoService;
-    }
-
     @GetMapping("/quien")
     public QuienResponse quien() {
-        return new QuienResponse(resolverHostname(), duenoService.obtenerDueno());
-    }
-
-    @GetMapping("/dueno")
-    public DuenoResponse dueno() {
-        return new DuenoResponse(duenoService.obtenerDueno());
+        return new QuienResponse(resolverHostname());
     }
 
     private String resolverHostname() {

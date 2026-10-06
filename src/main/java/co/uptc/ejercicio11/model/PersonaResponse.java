@@ -1,5 +1,6 @@
 package co.uptc.ejercicio11.model;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
 /**
@@ -7,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonUnwrapped;
  * persona se serializan "aplanados" (sin objeto anidado), de modo que el JSON
  * conserva la estructura original y solo agrega los campos hostname y dueno.
  */
+@JsonPropertyOrder({"persona", "hostname", "dueno"})
 public class PersonaResponse {
 
     @JsonUnwrapped
