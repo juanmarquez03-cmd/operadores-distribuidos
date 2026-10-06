@@ -5,11 +5,6 @@ import co.uptc.ejercicio11.service.*;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
-/**
- * Expone los endpoints REST de la calculadora.
- * Su única responsabilidad es recibir la petición, delegar en la capa de
- * servicio y traducir el resultado (o excepción) a una respuesta HTTP.
- */
 @RestController
 @RequestMapping("/calculadora")
 public class CalculadoraController {
