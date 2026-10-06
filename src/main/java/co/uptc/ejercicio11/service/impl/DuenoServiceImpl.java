@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class DuenoServiceImpl implements DuenoService {
 
-    private static final String DUENO = "David Marquez";
+    private static final String DUENO = "Diego 111111";
 
     @Override
     public String obtenerDueno() {
